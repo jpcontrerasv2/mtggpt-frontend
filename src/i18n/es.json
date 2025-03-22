@@ -1,0 +1,11 @@
+{
+  "by": "de",
+  "description": "Analiza cartas, reglas y mazos de Magic: The Gathering con recomendaciones estratégicas.",
+  "textarea_placeholder": "Pega tu lista de cartas aquí o escribe una pregunta...",
+  "consult_button": "Consultar",
+  "loading_message": "Generando respuesta. Esto puede tomar algunos segundos, paciencia.",
+  "answer_title": "Respuesta:",
+  "no_response": "No se recibió respuesta.",
+  "error_message": "Hubo un error al obtener la respuesta.",
+  "language": "Idioma"
+}

@@ -1,51 +1,41 @@
-// src/components/SuggestedQuestions.jsx
 import React, { useEffect, useState } from 'react';
+import i18next from 'i18next';
 
-const suggestedQuestions = [
-  "¿Cuáles son los mejores mazos del formato Modern actualmente?",
-  "Recomiéndame un mazo fuerte en Pauper.",
-  "¿Qué sucede si olvido un trigger en un torneo?",
-  "¿Cuáles son las mejores cartas en Standard ahora mismo?",
-  "¿Qué hace exactamente la carta Force of Will?",
-  "Explícame cómo funciona el efecto Storm.",
-  "¿Cuál es la carta más cara actualmente en MTG?",
-  "¿Qué significa que una carta esté restringida o baneada?",
-  "¿Cómo funciona la mecánica de Mutate?",
-  "¿Qué es el formato Commander y cómo se juega?",
-  "¿Cuáles son las cartas más icónicas de la historia de MTG?",
-  "¿Cómo puedo mejorar mi mazo de Draft?",
-  "¿Qué es el efecto de proliferar y cómo se usa?",
-  "¿Cuáles son las mejores cartas de removal en Legacy?",
-  "¿Cómo se juega un mazo de combo en Modern?",
-  "¿Qué es el formato Pioneer y cuáles son sus características?",
-  "¿Cuáles son las cartas más poderosas en Vintage?",
-  "¿Cómo funciona la habilidad de Deathtouch?",
-  "¿Qué es el efecto de Scry y cómo se utiliza?",
-  "¿Cuáles son las mejores cartas de ramp en Commander?",
-  "¿Cómo puedo proteger mis cartas de MTG?",
-  "¿Qué es el efecto de Flashback y cómo se juega?",
-  "¿Cuáles son las mejores cartas de counter en Standard?",
-  "¿Cómo se juega un mazo de control en Legacy?",
-  "¿Qué es el formato Brawl y cómo se juega?",
-  "¿Cuáles son las cartas más valiosas de la edición Alpha?",
-  "¿Cómo funciona la habilidad de Trample?",
-  "¿Qué es el efecto de Cascade y cómo se usa?",
-];
+const questionsByLang = {
+  es: [
+    "Recomiéndame un mazo fuerte en Pauper.",
+    "¿Qué sucede si olvido un trigger en un torneo?",
+    "¿Qué hace exactamente la carta Force of Will?",
+    "Explícame cómo funciona el efecto Storm.",
+    "¿Qué significa que una carta esté restringida o baneada?",
+    // ... más en español
+  ],
+  en: [
+    "Recommend me a strong Pauper deck.",
+    "What happens if I miss a trigger in a tournament?",
+    "What exactly does Force of Will do?",
+    "Explain how the Storm effect works.",
+    "What does it mean when a card is restricted or banned?",
+    // ... más en inglés
+  ],
+};
 
 const SuggestedQuestions = ({ onSelectQuestion }) => {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    const shuffled = suggestedQuestions.sort(() => 0.5 - Math.random()).slice(0, 4);
+    const lang = i18next.language || 'es';
+    const list = questionsByLang[lang] || questionsByLang['es'];
+    const shuffled = list.sort(() => 0.5 - Math.random()).slice(0, 4);
     setQuestions(shuffled);
-  }, []);
+  }, [i18next.language]); // actualiza si cambia el idioma
 
   return (
-    <div className="flex flex-wrap justify-center gap-3 mt-6">
+    <div className="flex flex-wrap justify-center gap-2 mt-4">
       {questions.map((q, index) => (
         <button
           key={index}
-          className="bg-gray-100 hover:bg-scry hover:text-white transition text-gray-800 font-medium px-4 py-3 rounded-xl shadow-sm"
+          className="bg-gray-100 hover:bg-scry hover:text-white transition text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm"
           onClick={() => onSelectQuestion(q)}
         >
           {q}

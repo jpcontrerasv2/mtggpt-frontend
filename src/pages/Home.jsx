@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm'; // ✅ Agregar esto
+import remarkGfm from 'remark-gfm';
 import SuggestedQuestions from '../components/SuggestedQuestions';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from "../components/LanguageSelector";
+import i18n from 'i18next';
+
+
 
 const Home = () => {
+  const { t } = useTranslation();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,28 +19,40 @@ const Home = () => {
     setLoading(true);
 
     try {
+      const lang = i18n.language;
+
+      const systemPrompt =
+        lang === 'es'
+          ? 'Responde en español como un experto en Magic: The Gathering.'
+          : 'Answer in English as an expert in Magic: The Gathering.';
+
+      const fullPrompt = `${systemPrompt}\n\n${question}`;
+
       const response = await fetch("https://mtggpt.onrender.com/ask", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
+        body: JSON.stringify({ question: fullPrompt })
       });
 
-      const responseData = await response.json(); // ✅ Convertimos la respuesta en JSON
-      const rawAnswer = responseData.answer || "No se recibió respuesta."; // ✅ Extraemos solo "answer"
+      const responseData = await response.json();
+      const rawAnswer = responseData.answer || (lang === 'es'
+        ? "No se recibió respuesta."
+        : "No response received.");
 
-      // 🔥 **Limpieza y formato**
       let respuestaFormateada = rawAnswer
-        .replace(/\s+/g, ' ') // Compactar espacios repetidos
-        .replace(/,\s*\./g, '') // Eliminar ", ."
-        .replace(/(\.|\:)/g, '$1\n\n') // Saltos de línea después de puntos y dos puntos
-        .replace(/\*\*(.*?)\*\*/g, '**$1**') // Negritas en Markdown
+        .replace(/\s+/g, ' ')
+        .replace(/,\s*\./g, '')
+        .replace(/(\.|\:)/g, '$1\n\n')
+        .replace(/\*\*(.*?)\*\*/g, '**$1**')
         .trim();
 
       setAnswer(respuestaFormateada);
       console.log("✅ Respuesta formateada:", respuestaFormateada);
     } catch (error) {
       console.error("❌ Error al consultar:", error);
-      setAnswer("Hubo un error al obtener la respuesta.");
+      setAnswer(i18n.language === 'es'
+        ? "Hubo un error al obtener la respuesta."
+        : "There was an error getting the response.");
     }
 
     setLoading(false);
@@ -42,24 +60,23 @@ const Home = () => {
 
 
   return (
-    <div className="max-w-3xl mx-auto text-center py-12 px-4">
-      <h1 className="text-3xl font-mono font-semibold">
-        MTG GPT es un proyecto de <span className="text-scry">Scry.cl</span>
+    <div className="max-w-6xl mx-auto text-center py-10 px-4">
+      <LanguageSelector />
+      <h1 className="text-3xl font-mono font-semibold mb-2">
+        MTG GPT {t('by')} <span className="text-scry">Scry.cl</span>
       </h1>
-      <p>
-        Evalúa datos actuales de cartas de Magic: The Gathering, datos de listas de mazos meta,
-        datos de precios, recomendaciones de cartas e información sobre las reglas del juego para responder preguntas.
-      </p>
+      <p>{t('description')}</p>
 
       <SuggestedQuestions onSelectQuestion={setQuestion} />
 
       <div className="mt-8">
-        <input
-          type="text"
+        <textarea
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Pregunta lo que quieras sobre MTG..."
-          className="w-full p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-scry"
+          placeholder={t('textarea_placeholder')}
+          className="w-full p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-scry resize-none"
+          rows={3}
+          style={{ minHeight: "50px", maxHeight: "400px", overflowY: "auto" }}
         />
 
         <button
@@ -72,16 +89,18 @@ const Home = () => {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
-          ) : "Consultar"}
+          ) : t('consult_button')}
         </button>
 
         {loading && (
-          <p className="mt-4 text-gray-500 text-sm animate-pulse">Generando respuesta...</p>
+          <p className="mt-4 text-gray-500 text-sm animate-pulse">
+            {t('loading_message')}
+          </p>
         )}
 
         {answer && (
           <div className="mt-8 text-left bg-gray-100 p-6 rounded-xl shadow-md leading-relaxed">
-            <h2 className="font-semibold text-xl text-scry mb-4">Respuesta:</h2>
+            <h2 className="font-semibold text-xl text-scry mb-4">{t('answer_title')}</h2>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
           </div>
         )}

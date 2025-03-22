@@ -1,0 +1,11 @@
+{
+  "language": "Language",
+  "by": "by",
+  "description": "Analyze cards, rules, and decks from Magic: The Gathering with strategic recommendations.",
+  "textarea_placeholder": "Paste your card list here or write a question...",
+  "consult_button": "Consult",
+  "loading_message": "Generating response. This may take a few seconds, please be patient.",
+  "answer_title": "Answer:",
+  "no_response": "No response received.",
+  "error_message": "There was an error getting the response."
+}
