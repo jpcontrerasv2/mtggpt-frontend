@@ -7,5 +7,12 @@
   "answer_title": "Respuesta:",
   "no_response": "No se recibió respuesta.",
   "error_message": "Hubo un error al obtener la respuesta.",
-  "language": "Idioma"
+  "language": "Idioma",
+  "card_preview": {
+    "usd": "Precio USD",
+    "foil": "Precio Foil",
+    "cardmarket": "Precio en CardMarket",
+    "link": "Ver en Scryfall →",
+    "na": "No disponible"
+  }
 }

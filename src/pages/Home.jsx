@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SuggestedQuestions from '../components/SuggestedQuestions';
-import { useTranslation } from 'react-i18next';
+import CardPreview from '../components/CardPreview';
 import LanguageSelector from "../components/LanguageSelector";
+import MoxfieldDeck from "../components/MoxfieldDeck";
+import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 
 
@@ -13,10 +15,15 @@ const Home = () => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
+  const [cardData, setCardData] = useState(null);
+
 
   const handleConsult = async () => {
     setAnswer('');
     setLoading(true);
+    // Reset preview
+    setCardData(null);
+
 
     try {
       const lang = i18n.language;
@@ -27,6 +34,26 @@ const Home = () => {
           : 'Answer in English as an expert in Magic: The Gathering.';
 
       const fullPrompt = `${systemPrompt}\n\n${question}`;
+
+      // Detectar si es una consulta tipo "qué hace la carta X"
+      const matchCarta = question.match(/(?:carta|carta de|carta del|explica(?:me)? la carta)\s+(.+)/i);
+
+      if (matchCarta) {
+        const cardName = matchCarta[1].trim();
+        try {
+          const cardRes = await fetch(`https://mtggpt.onrender.com/card/${encodeURIComponent(cardName)}`);
+          if (cardRes.ok) {
+            const cardInfo = await cardRes.json();
+            setCardData(cardInfo);
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.warn("No se encontró la carta", e);
+        }
+      }
+
+
 
       const response = await fetch("https://mtggpt.onrender.com/ask", {
         method: 'POST',
@@ -70,6 +97,8 @@ const Home = () => {
       <SuggestedQuestions onSelectQuestion={setQuestion} />
 
       <div className="mt-8">
+        <MoxfieldDeck position="above" />
+
         <textarea
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
@@ -97,6 +126,10 @@ const Home = () => {
             {t('loading_message')}
           </p>
         )}
+        {cardData && (
+          <CardPreview card={cardData} />
+        )}
+
 
         {answer && (
           <div className="mt-8 text-left bg-gray-100 p-6 rounded-xl shadow-md leading-relaxed">

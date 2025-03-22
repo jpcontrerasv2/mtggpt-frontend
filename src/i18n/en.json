@@ -1,11 +1,18 @@
 {
-  "language": "Language",
   "by": "by",
   "description": "Analyze cards, rules, and decks from Magic: The Gathering with strategic recommendations.",
-  "textarea_placeholder": "Paste your card list here or write a question...",
-  "consult_button": "Consult",
-  "loading_message": "Generating response. This may take a few seconds, please be patient.",
+  "textarea_placeholder": "Paste your decklist here or ask a question...",
+  "consult_button": "Ask",
+  "loading_message": "Generating answer. This may take a few seconds, please wait.",
   "answer_title": "Answer:",
   "no_response": "No response received.",
-  "error_message": "There was an error getting the response."
+  "error_message": "There was an error getting the response.",
+  "language": "Language",
+  "card_preview": {
+    "usd": "USD Price",
+    "foil": "Foil Price",
+    "cardmarket": "CardMarket Price",
+    "link": "View on Scryfall →",
+    "na": "Not available"
+  }
 }
